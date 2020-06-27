@@ -30,10 +30,19 @@ export default class Todo {
     this._activerBtns();
   }
 
+/**
+ * Toggle completed du Todo
+ * @return {[type]} [description]
+ */
   _toggleCompleted () {
-    this.completed = ! this.completed;
+    this.completed = !this.completed;
     this.el.querySelector('li').classList.toggle('completed');
     this.parent.setNotCompletedNumber();
+  }
+
+  _destroy () {
+    this.el.remove();
+    this.parent.removeOneById(this.id);
   }
 
 /**
@@ -45,5 +54,9 @@ export default class Todo {
       this.el.querySelector('.toggle').onclick = () => {
         this._toggleCompleted();
       }
+    // Activation des .destroy
+    this.el.querySelector('.destroy').onclick = () => {
+      this._destroy();
+    }
   }
 }

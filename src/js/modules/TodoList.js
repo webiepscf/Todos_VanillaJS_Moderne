@@ -7,11 +7,17 @@ export default class TodoList {
     this.listEl;
     this.notCompletedNumber;
     this.todos = [];
-    this.loadTodos(data.todos);
+    this._loadTodos(data.todos);
     this.template = todoListTemplate;
     this.render();
   }
-  loadTodos (todos) {
+
+/**
+ * Chargement des todos sous forme d'objets de type Todo dans this.todos
+ * @param  {[type]} todos [description]
+ * @return {[type]}       [description]
+ */
+  _loadTodos (todos) {
     for (let todo of todos) {
       this.todos.push(new Todo({parent: this, todo}));
     }
@@ -33,7 +39,7 @@ export default class TodoList {
     // Affichage du nombre de todos not completed
       this.setNotCompletedNumber();
     // Activation des éléments interactifs
-      this.activerBtns();
+      this._activerBtns();
   }
 
 /**
@@ -60,10 +66,22 @@ export default class TodoList {
   }
 
 /**
+ * Suppression d'une Todo par son id
+ * @param  {[type]} id [description]
+ * @return {[type]}    [description]
+ */
+  removeOneById (id) {
+    this.todos = this.todos.filter(function(todo){
+      return todo.id !== id;
+    });
+    this.setNotCompletedNumber();
+  }
+
+/**
  * Activation des éléments interactifs de la TodoList
  * @return {[type]} [description]
  */
-  activerBtns () {
+  _activerBtns () {
     // Activation de l'input .new-todo
       this.el.querySelector('.new-todo').onkeyup = (e) => {
         if (e.keyCode === 13) {
