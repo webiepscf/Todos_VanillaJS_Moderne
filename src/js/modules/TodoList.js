@@ -30,12 +30,15 @@ export default class TodoList {
         todo.render();
       }
 
-    // Calcul du nombre de todos not completed
+    // Affichage du nombre de todos not completed
       this.setNotCompletedNumber();
     // Activation des éléments interactifs
       this.activerBtns();
   }
 
+/**
+ * Affichage du nombre de todos not completed
+ */
   setNotCompletedNumber () {
     this.notCompletedNumber = this.todos.filter(function(todo) {
       return todo.completed === false;
@@ -57,7 +60,7 @@ export default class TodoList {
   }
 
 /**
- * Activation des éléments interactifs de la ToddoList
+ * Activation des éléments interactifs de la TodoList
  * @return {[type]} [description]
  */
   activerBtns () {
