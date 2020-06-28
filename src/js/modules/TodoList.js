@@ -81,11 +81,24 @@ export default class TodoList {
  * Suppression de tous les todos.completed
  * @return {[type]} [description]
  */
-  removeAllCompleted () {
+  _removeAllCompleted () {
     this.todos = this.todos.filter(function (todo) {
       return !todo.completed;
     });
     this.render(this.todos);
+  }
+
+/**
+ * Complete all todos notCompleted
+ * @return {[type]} [description]
+ */
+  _completeAll () {
+    const notCompleted = this.todos.filter(function (todo) {
+      return !todo.completed;
+    });
+    for (let todo of notCompleted) {
+      todo.toggleCompleted();
+    }
   }
 
 /**
@@ -132,8 +145,14 @@ export default class TodoList {
 
     // Activation du .clear-completed
       this.el.querySelector('.clear-completed').onclick = () => {
-        this.removeAllCompleted();
+        this._removeAllCompleted();
       };
+
+    // Activation du .toogle-all
+      this.el.querySelector('.toggle-all').onclick = () => {
+        this._completeAll();
+      };
+
   }
 
 }

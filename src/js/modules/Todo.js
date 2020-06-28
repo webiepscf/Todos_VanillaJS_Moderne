@@ -26,7 +26,7 @@ export default class Todo {
     this.el.innerHTML = this.template;
     this.parent.listEl.appendChild(this.el);
 
-    // Activation des éléments interactifs de la Todo
+    // Activation des éléments interactifs du Todo
     this._activerBtns();
   }
 
@@ -34,14 +34,20 @@ export default class Todo {
  * Toggle completed du Todo
  * @return {[type]} [description]
  */
-  _toggleCompleted () {
+  toggleCompleted () {
     this.completed = !this.completed;
+    if (this.completed) {
+      this.el.querySelector('.toggle').checked = true;
+    }
+    else {
+      this.el.querySelector('.toggle').removeAttribute('checked');
+    }
     this.el.querySelector('li').classList.toggle('completed');
     this.parent.setNotCompletedNumber();
   }
 
 /**
- * Suppression d'une Todo
+ * Suppression du Todo
  * @return {[type]} [description]
  */
   _destroy () {
@@ -50,7 +56,7 @@ export default class Todo {
   }
 
 /**
- * Edition d'une Todo
+ * Edition du Todo
  * @return {[type]} [description]
  */
   _edit () {
@@ -61,7 +67,7 @@ export default class Todo {
   }
 
 /**
- * Validation de la modification d'une Todo
+ * Validation de la modification du Todo
  * @return {[type]} [description]
  */
   _validate () {
@@ -77,7 +83,7 @@ export default class Todo {
   _activerBtns () {
     // Activation des .toggle
       this.el.querySelector('.toggle').onclick = () => {
-        this._toggleCompleted();
+        this.toggleCompleted();
       }
 
     // Activation des .destroy
