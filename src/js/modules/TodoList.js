@@ -6,26 +6,47 @@ export default class TodoList {
     this.el = document.querySelector(data.el);
     this.listEl;
     this.notCompletedNumber;
-    this.todos = [];
-    this._loadTodos(data.todos);
     this.template = todoListTemplate;
-    this.render(this.todos);
+
+    // Je stocke les données de data.js en localStorage
+      this._loadTodos(data.todos);
+      this.render(this.todos);
   }
 
 /**
- * Chargement des todos sous forme d'objets de type Todo dans this.todos
- * @param  {[type]} todos [description]
+ * Stockage des todos en localStorage
+ * @param  {[Array]} todos
  * @return {[type]}       [description]
  */
   _loadTodos (todos) {
-    for (let todo of todos) {
-      this.todos.push(new Todo({parent: this, todo}));
+    if (!window.localStorage.todos) {
+      window.localStorage.todos = JSON.stringify(todos);
     }
   }
 
 /**
+ * Setter de this.todos: Modifie les données en localStorage
+ * @param  {[Array]} todos
+ * @return {[type]}       [description]
+ */
+  set todos (todos) {
+    if (!window.localStorage.todos || window.localStorage.todos != JSON.stringify(todos)) {
+      window.localStorage.todos = JSON.stringify(todos);
+    }
+  }
+
+/**
+ * Getter de this.todos : récupère les données du localStorage
+ * @return {[Array]} [description]
+ */
+  get todos () {
+    return JSON.parse(localStorage.todos);
+  }
+
+
+/**
  * Rendu de la TodoList
- * @return {[type]} [description]
+ * @return {[Array]} [description]
  */
   render (todos) {
     this.el.innerHTML = this.template;
@@ -33,7 +54,8 @@ export default class TodoList {
       this.listEl = this.el.querySelector('.todo-list');
     // Rendu des todos
       for (let todo of todos) {
-        todo.render();
+        const newTodo = new Todo({parent: this, todo});
+        newTodo.render();
       }
 
     // Affichage du nombre de todos not completed
@@ -56,10 +78,19 @@ export default class TodoList {
  * Ajout d'un todo
  */
   addTodo () {
+    // Je récupères les infos pour construire le nouveau Todo
     const content = this.el.querySelector('.new-todo').value;
     const id = this.todos[this.todos.length - 1].id + 1;
-    const newTodo = new Todo({parent: this, todo: {id, content, completed: false}})
-    this.todos.push(newTodo);
+    const todo = {id, content, completed: false};
+
+    // J'envoie en localStorage
+    let test = this.todos;
+    test.push(todo);
+    this.todos = test;
+    console.table(this.todos);
+
+    // Je fais le render du nouveau Todo
+    const newTodo = new Todo({parent: this, todo: {id, content, completed: false}});
     newTodo.render();
     this.el.querySelector('.new-todo').value = '';
     this.setNotCompletedNumber();
@@ -67,8 +98,8 @@ export default class TodoList {
 
 /**
  * Suppression d'une Todo par son id
- * @param  {[type]} id [description]
- * @return {[type]}    [description]
+ * @param  {[int]} id [description]
+ * @return {[Array]}  [description]
  */
   removeOneById (id) {
     this.todos = this.todos.filter(function(todo){
@@ -90,7 +121,7 @@ export default class TodoList {
 
 /**
  * Complete all todos notCompleted
- * @return {[type]} [description]
+ * @return {[Array]} [description]
  */
   _completeAll () {
     const notCompleted = this.todos.filter(function (todo) {
@@ -103,8 +134,8 @@ export default class TodoList {
 
 /**
  * Affichage des todos correspondants au filtre choisi
- * @param  {[type]} filter [description]
- * @return {[type]}        [description]
+ * @param  {[string]} filter [description]
+ * @return {[Array]}        [description]
  */
   _filter (filter) {
     switch (filter) {
@@ -152,7 +183,5 @@ export default class TodoList {
       this.el.querySelector('.toggle-all').onclick = () => {
         this._completeAll();
       };
-
   }
-
 }
